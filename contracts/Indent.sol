@@ -46,6 +46,7 @@ contract Indent{
         owner = msg.sender;
         creator = msg.sender;
         creation_date = block.timestamp;
+        modify_date = block.timestamp;
         restricted = _restricted;
     }
 
@@ -66,6 +67,17 @@ contract Indent{
             order_id = part_orders.length;
             part_order_mapping[_part_id] = order_id;
         }
+    }
+
+    function get_part_orders() external view returns(part_order [] memory orders){
+        orders = part_orders;
+    }
+
+    function get_registered_part_list(string memory _part_id) external view returns(address [] memory parts){
+        uint pos = part_order_mapping[_part_id];
+        require(pos > 0,'Part order does not exist');
+        part_order memory order = part_orders[pos - 1];
+        parts = order.parts;
     }
 
     function register_part(string memory _entity_id ,string memory _part_id,string memory _current_status,string memory _current_loc,string memory _maintenance_status) public onlyBy returns(address entity_address){
